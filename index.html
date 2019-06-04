@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Objects</title>
+    <link rel="stylesheet" href="objects.css">
+</head>
+
+<body>
+    <h1>Objects</h1>
+
+    <!-- <h2>By HTML Table</h2> -->
+
+    <table class="object">
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="type">
+            <th>Type</th>
+            <th>Create</th>
+            <th>Composition / Mixins</th>
+            <th>Abstraction</th>
+            <th>Inheritance</th>
+            <th>Polymorphism</th>
+            <th>onClick / EventListener</th>
+        </tr>
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="literal">
+            <th>literal</th>
+            <td>
+                <pre>
+let animal = {
+    color: 'red',
+    myColor: function () {
+        return "I'm: "+ this.color
+    }
+}
+                </pre>
+                <pre id="literalCreate"></pre>
+                <script>
+                    let animal = {
+                        color: 'red',
+                        myColor: function () {
+                            return "I'm: " + this.color
+                        },
+                        myColorAlert: function () {
+                            alert("I'm: " + this.color)
+                        }
+                    }
+                    // document.getElementById('literalCreate').innerHTML = JSON.stringify(animal, null, 2)
+                    let obj = '';
+                    // for (let prop in animal) {
+                    //     obj += prop + ' : ' + animal[prop] + '\n'
+                    // }
+                    // obj += '\n--------------------------\n\n'
+                    obj += 'result:\n\n'
+                    obj += 'animal.color: ' + animal.color + '\n' + 'animal.myColor(): ' + animal.myColor()
+                    document.getElementById('literalCreate').innerHTML = obj
+                    console.log('literalCreate animal:\n', animal)
+                </script>
+            </td>
+            <td>
+                <pre>
+const improver = state => 
+'super ' + state.color
+                </pre>
+                <pre id="literalComposition"></pre>
+                <script>
+                    const improver = state => 'super ' + state.color
+                    obj = '';
+                    obj += 'result:\n\n'
+                    obj += 'improver(animal): ' + improver(animal)
+                    document.getElementById('literalComposition').innerHTML = obj
+                </script>
+            </td>
+            <td>
+                <p class="red">not implemented</p>
+            </td>
+            <td>
+                <p>Object.create</p>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p onclick="animal.myColorAlert()">animal.myColorAlert()</p>
+                <p id="literalClick">animal.myColorAlert.bind(animal)</p>
+            </td>
+        </tr>
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="object">
+            <th>Object.create</th>
+            <td>
+                <pre>
+const dog = Object.create(animal)
+dog.color = 'blue'
+                </pre>
+                <pre id="objectCreate"></pre>
+                <script>
+                    const dog = Object.create(animal)
+                    dog.color = 'blue'
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'dog.color: ' + dog.color + '\n' + 'dog.myColor(): ' + dog.myColor()
+                    document.getElementById('objectCreate').innerHTML = obj
+                    console.log('objectCreate dog:\n', dog)
+                </script>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p class="red">not implemented</p>
+            </td>
+            <td>
+                <p>inherited:</p>
+                <p>+ color</p>
+                <p>+ myColor()</p>
+                <p>+ myColorAlert()</p>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p onclick="dog.myColorAlert()">dog.myColorAlert()</p>
+                <p id="objectClick">dog.myColorAlert.bind(dog)</p>
+            </td>
+        </tr>
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="new">
+            <th>new</th>
+            <td>
+                <pre>
+const Human = function (color) {
+    const phrase = 'My color is: '
+    const hiddenColor = color
+    this.color = color
+    this.myColor = function () {
+            return phrase + this.color
+        },
+        this.myColorAlert = () => {
+            alert(phrase + hiddenColor)
+        }
+}
+const boy = new Human('black')
+                    </pre>
+                <pre id="newCreate"></pre>
+                <script>
+                    const Human = function (color) {
+                        const phrase = 'My color is: '
+                        const hiddenColor = color
+                        this.color = color
+                        this.myColor = function () {
+                                return phrase + this.color
+                            },
+                            this.myColorAlert = () => {
+                                alert(phrase + hiddenColor)
+                            }
+                    }
+                    const boy = new Human('black')
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'boy.color: ' + boy.color + '\n' + 'boy.myColor(): ' + boy.myColor()
+                    document.getElementById('newCreate').innerHTML = obj
+                    console.log('newCreate boy:\n', boy)
+                </script>
+            </td>
+            <td>
+                <pre>
+
+                </pre>
+                <pre id="newComposition"></pre>
+                <script>
+                    animal.myColor.bind(boy)()
+                    animal.myColor.apply(boy)
+                    animal.myColor.call(boy)
+                    obj = ''
+                    obj += 'Method Reuse:\n\n'
+                    obj += 'animal.myColor.bind(boy)(): \n' + animal.myColor.bind(boy)() +
+                        '\nanimal.myColor.apply(boy): \n' + animal.myColor.apply(boy) +
+                        '\nanimal.myColor.call(boy): \n' + animal.myColor.call(boy)+ '\n\nMixins & Chaining:\n\n'
+                    document.getElementById('newComposition').innerHTML = obj
+                </script>
+        <pre>
+const addBirds = obj => {
+    let canFly = false
+    return Object.assign(
+        {},
+        obj,
+        {addFly() {
+            canFly = true
+            return this}},
+        {isFly() {
+            return canFly
+        }}
+    )
+}
+const addAlien = obj => {
+    let canIncinerate = false
+    return Object.assign(
+        {},
+        obj,
+        {addIncinerate() {
+            canIncinerate = true
+            return this}},
+        {isIncinerate() {
+            return canIncinerate
+        }}
+    )
+}
+const superMan = addBirds(addAlien())
+superMan.addFly().addIncinerate() // Chaining
+console.log('SuperMan: \n', superMan)
+                </pre>
+                <pre id="newMixins"></pre>
+                <script>
+                    const addBirds = obj => {
+                        let canFly = false
+                        return Object.assign(
+                            {},
+                            obj,
+                            {addFly() {
+                                canFly = true
+                                return this}},
+                            {isFly() {
+                                return canFly
+                            }}
+                        )
+                    }
+                    const addAlien = obj => {
+                        let canIncinerate = false
+                        return Object.assign(
+                            {},
+                            obj,
+                            {addIncinerate() {
+                                canIncinerate = true
+                                return this}},
+                            {isIncinerate() {
+                                return canIncinerate
+                            }}
+                        )
+                    }
+                    const superMan = addBirds(addAlien())
+                    superMan.addFly().addIncinerate() // Chaining
+                    console.log('SuperMan: \n', superMan)
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'superMan.isFly(): ' + superMan.isFly() +
+                        '\nsuperMan.isIncinerate(): ' + superMan.isIncinerate() 
+                    document.getElementById('newMixins').innerHTML = obj
+
+                </script>
+            </td>
+            <td>
+                <p>hide: phrase</p>
+                <p>abstract function:</p>
+                <pre>
+const Mammal = function() {
+    this.food = 'milk'
+    const err = 
+        'Cannot create f.';
+    throw new Error (err)
+}
+const monkey = new Mammal 
+                    </pre>
+                <pre>
+                        <script>
+                            const Mammal = function() {
+                                this.food = 'milk'
+                                throw new Error ('Cannot create the instance of an abstract class(function)')
+                            }
+                            const monkey = new Mammal
+                        </script>
+                    </pre>
+            </td>
+            <td>
+                <p>inherited:</p>
+                <p class="red">- food</p>
+                <p>+ breathe</p>
+                <pre>
+Mammal.prototype.breathe = true
+Human.prototype = Object.create(Mammal.prototype)
+const girl = new Human('white')
+                    </pre>
+                <pre id="newInheritance"></pre>
+                <pre>
+                        <script>
+                            Mammal.prototype.breathe = true
+                            Human.prototype = Object.create(Mammal.prototype)
+                            Human.prototype.constructor = Human
+                            const girl = new Human('white')
+                            obj = ''
+                            obj += 'result:\n\n'
+                            obj += 'girl.color: ' + girl.color + '\ngirl.myColor(): ' + girl.myColor() + '\ngirl.food: ' + girl.food + '\ngirl.breathe: ' + girl.breathe + '\ngirl instanceof Mammal: ' + (girl instanceof Mammal)
+                            document.getElementById('newInheritance').innerHTML = obj
+                            console.log('newInheritance girl: \n', girl)
+                        </script>
+                    </pre>
+
+                <p>inherited:</p>
+                <p>+ food</p>
+                <p>+ breathe</p>
+                <pre>
+const MammalInstance = function(){
+    this.food = 'meat'
+}
+const HumanInstance = function(){
+    this.color = 'pink'
+}
+HumanInstance.prototype = new MammalInstance
+HumanInstance.prototype.constructor = HumanInstance
+const girlInstance = new HumanInstance
+MammalInstance.prototype.breathe = false
+                        </pre>
+                <pre id="newInheritance1"></pre>
+                <pre>
+                            <script>
+                                const MammalInstance = function(){
+                                    this.food = 'meat'
+                                }
+                                const HumanInstance = function(){
+                                    this.color = 'pink'
+                                }
+                                HumanInstance.prototype = new MammalInstance
+                                HumanInstance.prototype.constructor = HumanInstance
+                                const girlInstance = new HumanInstance
+                                MammalInstance.prototype.breathe = false
+                                obj = ''
+                                obj += 'result:\n\n'
+                                obj += 'girlInstance.color: ' + girlInstance.color + '\ngirlInstance.food: ' + girlInstance.food + '\ngirlInstance.breathe: ' + girlInstance.breathe + '\ngirlInstance instanceof MammalInstance: ' + (girlInstance instanceof MammalInstance)
+                                document.getElementById('newInheritance1').innerHTML = obj
+                                console.log('newInheritance girlInstance: \n', girlInstance)
+                            </script>
+                        </pre>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p onclick="boy.myColorAlert()">boy.myColorAlert()</p>
+                <p id="newClick">boy.myColorAlert</p>
+            </td>
+        </tr>
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="class">
+            <th>class</th>
+            <td>
+                <pre>
+class Bird {
+    constructor(color) {
+        this.color = color
+        this.weight = 11
+        this.myColor = function() {
+            return 'My color is: ' + 
+                this.color
+        }
+    } 
+    myWeight() {
+            return 'My weight is: ' + 
+                this.weight
+        }
+}
+const kiwi = new Bird('green')
+                    </pre>
+                <pre id="classCreate"></pre>
+                <script>
+                    class Bird {
+                        constructor(color) {
+                            this.color = color
+                            this.weight = 11
+                            this.myColor = function () {
+                                return 'My color is: ' + this.color
+                            }
+                        }
+                        myWeight() {
+                            return 'My weight is: ' + this.weight
+                        }
+                        myWeightAlert() {
+                            alert('My weight is: ' + this.weight)
+                        }
+                    }
+                    const kiwi = new Bird('green')
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'kiwi.color: ' + kiwi.color + '\n' + 'kiwi.myColor(): ' + kiwi.myColor() + '\n' +
+                        'kiwi.myWeight(): ' + kiwi.myWeight()
+                    document.getElementById('classCreate').innerHTML = obj
+                    console.log('classCreate kiwi:\n', kiwi)
+                </script>
+            </td>
+            <td>
+                <p>Composition:</p>
+                <pre>
+const darker = state => ({
+    darked: () => 'dark ' + state.color
+})
+const lighter = state => ({
+    lighted: () => 'light ' + state.color
+})              
+                </pre>
+                <pre id="objectComposition"></pre>
+                <script>
+                    const darker = state => ({
+                        darked: () => 'dark ' + state.color
+                    })
+                    const lighter = state => ({
+                        lighted: () => 'light ' + state.color
+                    })
+                    obj = '';
+                    obj += 'result:\n\n'
+                    obj += 'darker(animal).darked(): ' + darker(animal).darked() + '\nlighter(animal).lighted(): ' +
+                        lighter(animal).lighted()
+                    document.getElementById('objectComposition').innerHTML = obj
+                </script>
+
+            </td>
+            <td>
+                <p class="red">not implemented</p>
+            </td>
+            <td>
+                <p>inherited:</p>
+                <p>+ color</p>
+                <p>+ myColor()</p>
+                <p>+ myWeight()</p>
+                <pre>
+class Fly extends Bird {
+    constructor() {
+        super('yellow')
+        this.hight = 22
+    }
+}
+const butterfly = new Fly
+                    </pre>
+                <pre id="classInheritance"></pre>
+                <script>
+                    class Fly extends Bird {
+                        constructor() {
+                            super('yellow')
+                            this.height = 22
+                        }
+                    }
+                    const butterfly = new Fly
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'butterfly.color: ' + butterfly.color + '\nbutterfly.myColor(): ' + butterfly.myColor() +
+                        '\nbutterfly.myWeight(): ' + butterfly.myWeight() + '\nbutterfly.height: ' + butterfly.height
+                    document.getElementById('classInheritance').innerHTML = obj
+                    console.log('classInheritance butterfly:\n', butterfly)
+                </script>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p onclick="kiwi.myWeightAlert()">kiwi.myWeightAlert()</p>
+                <p id="classClick">kiwi.myWeightAlert.bind(kiwi)</p>
+            </td>
+        </tr>
+
+        <!-- ------------------------------------------------------------- -->
+
+        <tr id="factory">
+            <th>factory</th>
+            <td>
+                <pre>
+const car = (color) => {
+    const phrase = 'My color is: '
+    return {
+        color: color,
+        myColor: function() {
+            return phrase + this.color
+        } 
+    } 
+}
+const lanos = car('white')
+                    </pre>
+                <pre id="factoryCreate"></pre>
+                <script>
+                    const car = (color) => {
+                        const phrase = 'My color is: '
+                        const hiddenColor = color
+                        return {
+                            color: color,
+                            myColor: function () {
+                                return phrase + this.color
+                            },
+                            myColorAlert: () => {
+                                alert(phrase + hiddenColor)
+                            }
+                        }
+                    }
+                    const lanos = car('white')
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'lanos.color: ' + lanos.color + '\n' + 'lanos.myColor(): ' + lanos.myColor()
+                    document.getElementById('factoryCreate').innerHTML = obj
+                    console.log('factoryCreate lanos:\n', lanos)
+                </script>
+            </td>
+            <td>
+                <pre>
+const mixedObject = (name) => {
+    const state = {
+        name,
+        color: 'grey'
+    }
+    return Object.assign(
+        Object.create(animal),
+        {strength: 100500},
+        darker(state),
+        lighter(state)
+    )
+}
+const rocket = mixedObject('Sanny')
+                </pre>
+                <pre id="factoryComposition"></pre>
+                <script>
+                    const mixedObject = (name) => {
+                        const state = {
+                            name,
+                            color: 'grey'
+                        }
+                        return Object.assign(
+                            Object.create(animal), {
+                                strength: 100500
+                            },
+                            darker(state),
+                            lighter(state)
+                        )
+                    }
+                    const rocket = mixedObject('Sanny')
+                    obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'rocket.darked(): ' + rocket.darked() + '\nrocket.name: ' + rocket.name +
+                        '\nrocket.strength: ' + rocket.strength + '\nrocket.myColor(): ' + rocket.myColor()
+                    document.getElementById('factoryComposition').innerHTML = obj
+                    console.log('factoryComposition rocket:\n', rocket)
+                </script>
+            </td>
+            <td>
+                <p>hide: phrase</p>
+            </td>
+            <td>
+                <p>Object.create</p>
+                <p>inherited:</p>
+                <p>+ myColor()</p>
+                <p>+ myColorAlert()</p>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p onclick="lanos.myColorAlert()">lanos.myColorAlert()</p>
+                <p id="factoryClick">lanos.myColorAlert</p>
+            </td>
+        </tr>
+    </table>
+
+    <blockquote>
+        <h3>Encapsulation</h3>
+        <p>all types have</p>
+        <p>+ properties</p>
+        <p>+ methods</p>
+    </blockquote>
+
+    <blockquote>
+        <h3>Getters & Setters</h3>
+        <pre>
+const getters = {
+    color: '',
+    get getColor(){
+        return this.color
+    },
+    set setColor(color){
+        this.color = color
+    }
+}
+getters.setColor = 'red'
+        </pre>
+        <pre></pre>
+        <script>
+            const getters = {
+                color: '',
+                get getColor() {
+                    return this.color
+                },
+                set setColor(color) {
+                    this.color = color
+                }
+            }
+            getters.setColor = 'red'
+            console.log('getters: \n', getters)
+        </script>
+    </blockquote>
+    <blockquote>
+        <h3>Closure + IIFE (Immediately-Invoked Function Expression) + Higher-order function (returns a function)</h3>
+        <pre>
+const add = (function(){
+    let counter = 0
+    return () => {
+        counter++
+        return counter
+        }
+})()
+        </pre>
+        <pre></pre>
+        <script>
+            const add = (function(){
+                let counter = 0
+                return () => {
+                    counter++
+                    return counter
+                    }
+            })()
+        </script>
+    </blockquote>
+    <blockquote>
+        <h3>Higher-order function (takes functions as arguments)</h3>
+        <pre>
+const family = [
+    {type: 'human', male: true, name: 'Aleksandr'},
+    {type: 'human', male: false, name: 'Ludmila'},
+    {type: 'human', male: false, name: 'Anastasia'},
+    {type: 'human', male: true, name: 'Aleksandr'},
+    {type: 'human', male: true, name: 'Lev'},
+    {type: 'animal', male: true, name: 'Juck'},
+    {type: 'animal', male: false, name: 'Anfiska'}
+]
+const male = family.filter(item => item.male)
+console.log('family:\n', family, '\nmale:', male)
+        </pre>
+        <pre id="higherOrder"></pre>
+        <script>
+            const family = [
+                {type: 'human', male: true, name: 'Aleksandr'},
+                {type: 'human', male: false, name: 'Ludmila'},
+                {type: 'human', male: false, name: 'Anastasia'},
+                {type: 'human', male: true, name: 'Aleksandr'},
+                {type: 'human', male: true, name: 'Lev'},
+                {type: 'animal', male: true, name: 'Juck'},
+                {type: 'animal', male: false, name: 'Anfiska'}
+            ]
+            const male = family.filter(item => item.male)
+            console.log('family:\n', family, '\nmale:', male)
+            // obj = ''
+            // obj += 'result:\n\n'
+            // obj += 'hero.name: ' + hero.name 
+            // document.getElementById('higherOrder').innerHTML = obj
+        </script>
+    </blockquote>    
+    <blockquote>
+        <h3>Singleton pattern</h3>
+        <pre>
+const Hero = function(name){
+    if (typeof Hero.instance === 'object') return Hero.instance
+    Hero.instance = this
+    this.name = name
+}
+const hero = new Hero('Aleksandr')
+const newHero = new Hero('Lev')
+        </pre>
+        <pre id="singleton"></pre>
+        <script>
+            const Hero = function(name){
+                if (typeof Hero.instance === 'object') return Hero.instance
+                Hero.instance = this
+                this.name = name
+            }
+            const hero = new Hero('Aleksandr')
+            const newHero = new Hero('Lev')
+            obj = ''
+                    obj += 'result:\n\n'
+                    obj += 'hero.name: ' + hero.name + '\nnewHero.name: ' + newHero.name
+                    document.getElementById('singleton').innerHTML = obj
+        </script>
+    </blockquote>
+
+
+
+    <!-- <h2>By CSS Grid</h2>
+
+    <div class="grid-container">
+        <div class="grid-item">Type</div>
+        <div class="grid-item">Create</div>
+        <div class="grid-item">Composition</div>
+        <div class="grid-item">Abstraction</div>
+        <div class="grid-item">Inheritance</div>
+        <div class="grid-item">Encapsulation</div>
+        <div class="grid-item">Polymorphism</div>
+        <div class="grid-item">8</div>
+        <div class="grid-item">9</div>
+    </div> -->
+    <script src="index.js"></script>
+</body>
+
+</html>
